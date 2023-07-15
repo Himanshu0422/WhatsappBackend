@@ -24,6 +24,7 @@ export const create_open_conversation = async (req, res, next) => {
             let reciever_user = await findUser(reciever_id);
             let convoData = {
                 name: reciever_user.name,
+                picture: reciever_user.picture,
                 isGroup: false,
                 users: [sender_id, reciever_id],
             }
@@ -44,7 +45,7 @@ export const getConversations = async (req, res, next) => {
     try {
         const user_id = req.user.userId;
         const conversations = await getUserConversations(user_id);
-        res.status (200). json (conversations);
+        res.status(200).json(conversations);
     } catch (error) {
         next (error);
     }

@@ -7,6 +7,10 @@ const ConversationSchema = mongoose.Schema({
         required: [true, "Conversation name is required."],
         trim: true,
     },
+    picture: {
+        type: String,
+        required: true
+    },
     isGroup: {
         type: Boolean,
         required: true,
@@ -20,7 +24,7 @@ const ConversationSchema = mongoose.Schema({
     ],
     latestMessage: {
         type: ObjectId,
-        ref: "MessageMode1"
+        ref: "MessageModel"
     },
     admin: {
         type: ObjectId,

@@ -1,5 +1,6 @@
 import UserModel from "../models/userModel.js";
 import ConversationModel from "../models/conversationModel.js";
+import createHttpError from 'http-errors';
 
 export const doesConversationExist = async (sender_id, receiver_id) => {
     let convos = await ConversationModel.find({
@@ -12,7 +13,7 @@ export const doesConversationExist = async (sender_id, receiver_id) => {
         .populate("users", "-password")
         .populate("latestMessage");
 
-    if (!convos) throw createHittpError.BadRequest("Oops...Something went wrong!");
+    if (!convos) throw createHttpError.BadRequest("Oops...Something went wrong!");
     //populate message model
     convos = await UserModel.populate(convos, {
         path: "latestMessage.sender",
@@ -47,20 +48,21 @@ export const getUserConversations = async (user_id) => {
     await ConversationModel.find({
         users: { $elemMatch: { $eq: user_id } },
     })
-        .populate("users", "-password")
-        .populate("admin", "-password")
-        .populate("latestMessage")
-        .sort({ updatedAt: -1 })
-        .then(async (results) => {
-            results = await UserModel.populate(results, {
-                path: "latestMessage.sender",
-                select: "name email picture status",
-            });
-            conversations = results;
-        })
-        .catch((err) => {
-            throw createHttpError.BadRequest("Oops...Something went wrong !");
+    .populate("users", "-password")
+    .populate("admin", "-password")
+    .populate("latestMessage")
+    .sort({ updatedAt: -1 })
+    .then(async (results) => {
+        results = await UserModel.populate(results, {
+            path: "latestMessage.sender",
+            select: "name email picture status",
         });
+        conversations = results;
+    })
+    .catch((err) => {
+        throw createHttpError.BadRequest("Oops...Something went wrong !");
+    });
+    console.log(1);
     return conversations;
 };
 
