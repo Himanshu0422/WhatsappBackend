@@ -62,7 +62,6 @@ export const getUserConversations = async (user_id) => {
     .catch((err) => {
         throw createHttpError.BadRequest("Oops...Something went wrong !");
     });
-    console.log(1);
     return conversations;
 };
 

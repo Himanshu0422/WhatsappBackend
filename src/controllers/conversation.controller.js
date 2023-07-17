@@ -6,8 +6,8 @@ import { findUser } from "../services/user.service.js";
 export const create_open_conversation = async (req, res, next) => {
     try {
         const sender_id = req.user.userId;
-        const { reciever_id } = req.body;
-        if(!reciever_id){
+        const { receiver_id } = req.body;
+        if(!receiver_id){
             logger.error("Please provide the user id you wanna start a conversation with!");
             res.status(400);
             throw createHttpError.BadGateway("Oops...Something went wrong!");
@@ -15,18 +15,17 @@ export const create_open_conversation = async (req, res, next) => {
 
         const existed_conversation = await doesConversationExist(
             sender_id,
-            reciever_id
+            receiver_id
         )
-
         if(existed_conversation){
             res.json(existed_conversation);
         }else{
-            let reciever_user = await findUser(reciever_id);
+            let reciever_user = await findUser(receiver_id);
             let convoData = {
                 name: reciever_user.name,
                 picture: reciever_user.picture,
                 isGroup: false,
-                users: [sender_id, reciever_id],
+                users: [sender_id, receiver_id],
             }
             const newConvo = await createConversation(convoData);
             const populatedConvo = await populateConversation(
